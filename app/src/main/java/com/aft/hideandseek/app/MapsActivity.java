@@ -5,8 +5,14 @@ import android.media.CameraProfile;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Gravity;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,21 +39,27 @@ public class MapsActivity extends FragmentActivity {
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
 
+        registerForContextMenu(findViewById(R.id.map));
+
         markers = new ArrayList<HideAndSeekMarker>();
 
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
                 selectedLoc = latLng;
-                Toast toast = Toast.makeText(getApplicationContext(), "Long press occurred", 2000);
-                toast.show();
-                Intent settingsIntent = new Intent(MapsActivity.this, MarkerSettingsActivity.class);
-                startActivityForResult(settingsIntent, 1);
+
+                Log.d("", "Map long click occurred");
+                openContextMenu(findViewById(R.id.map));
+                /*PopupMenu popup = new PopupMenu(MapsActivity.this, findViewById(R.id.map));
+                MenuInflater inflater = popup.getMenuInflater();
+                inflater.inflate(R.menu.create_context_menu, popup.getMenu());
+                popup.show();*/
+
+
             }
         });
 
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-
             @Override
             public void onCameraChange(CameraPosition position) {
                 for (HideAndSeekMarker m : markers) {
@@ -55,6 +67,27 @@ public class MapsActivity extends FragmentActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.create_context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.add_marker:
+                Intent settingsIntent = new Intent(MapsActivity.this, MarkerSettingsActivity.class);
+                startActivityForResult(settingsIntent, 1);
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 
     @Override
@@ -101,13 +134,6 @@ public class MapsActivity extends FragmentActivity {
         }
     }
 
-    /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
-     * <p>
-     * This should only be called once and when we are sure that {@link #mMap} is not null.
-     */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
     }
 }
