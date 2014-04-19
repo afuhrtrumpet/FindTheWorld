@@ -17,7 +17,7 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/editText"
+        android:id="@+id/markerText"
         android:layout_toRightOf="@+id/textView"
         android:layout_marginLeft="42dp"
         android:layout_alignTop="@+id/textView"
@@ -28,10 +28,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Set Text"
-        android:id="@+id/button"
-        android:layout_below="@+id/editText"
-        android:layout_alignLeft="@+id/editText"
-        android:layout_alignStart="@+id/editText"
+        android:id="@+id/bSetMarker"
+        android:layout_below="@+id/markerText"
+        android:layout_alignLeft="@+id/markerText"
+        android:layout_alignStart="@+id/markerText"
         android:layout_marginTop="73dp" />
 
 </RelativeLayout>

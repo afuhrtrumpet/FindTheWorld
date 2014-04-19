@@ -20,11 +20,11 @@ public class MarkerSettingsActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_marker_settings);
 
-        Button b = (Button) findViewById(R.id.button);
+        Button b = (Button) findViewById(R.id.bSetMarker);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText et = (EditText) findViewById(R.id.editText);
+                EditText et = (EditText) findViewById(R.id.markerText);
 
                 Intent intent = new Intent();
                 intent.putExtra("Name", et.getText().toString());

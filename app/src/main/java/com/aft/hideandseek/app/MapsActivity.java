@@ -31,7 +31,7 @@ public class MapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private LatLng selectedLoc;
-    private List<HideAndSeekMarker> markers;
+    private ArrayList<HideAndSeekMarker> markers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +85,10 @@ public class MapsActivity extends FragmentActivity {
                 Intent settingsIntent = new Intent(MapsActivity.this, MarkerSettingsActivity.class);
                 startActivityForResult(settingsIntent, 1);
                 return true;
+            case R.id.save:
+                Intent saveIntent = new Intent(MapsActivity.this, SaveGameActivity.class);
+                saveIntent.putParcelableArrayListExtra("Markers", markers);
+                startActivity(saveIntent);
             default:
                 return super.onContextItemSelected(item);
         }
@@ -93,11 +97,8 @@ public class MapsActivity extends FragmentActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        Log.d("", "Processing result");
-        markers.add(new HideAndSeekMarker(
-                mMap.addMarker(new MarkerOptions().position(selectedLoc).title(data.getStringExtra("Name"))),
-                mMap.getCameraPosition().zoom));
+        HideAndSeekMarker marker = new HideAndSeekMarker(mMap, data.getStringExtra("Name"), selectedLoc, mMap.getCameraPosition().zoom);
+        markers.add(marker);
     }
 
     @Override
