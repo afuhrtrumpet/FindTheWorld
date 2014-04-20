@@ -33,6 +33,8 @@ public class HideAndSeekMarker implements Parcelable {
         zoomLevel = in.readFloat();
     }
 
+    public Marker getMarker() { return marker; }
+
     public String getName() { return name; }
 
     public LatLng getPosition() { return position; }
@@ -45,11 +47,15 @@ public class HideAndSeekMarker implements Parcelable {
 
     public void find() {
         found = true;
+        marker.setAlpha(0.5F);
     }
 
     public void reset() {
         found = false;
+        marker.setAlpha(1.0F);
     }
+
+    public boolean isFound() { return found; }
 
     @Override
     public int describeContents() {

@@ -1,5 +1,7 @@
 package com.aft.hideandseek.app;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -11,6 +13,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,6 +27,7 @@ public class PlayGameActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private List<HideAndSeekMarker> markers;
+    private int score;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,61 @@ public class PlayGameActivity extends FragmentActivity {
                     Log.d("", "Adjusting zoom of " + m.getName());
                     m.adjustVisibilityFromZoom(cameraPosition.zoom);
                 }
+            }
+        });
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                for (HideAndSeekMarker m : markers)
+                    if (m.getMarker().equals(marker)) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(PlayGameActivity.this);
+                        if (!m.isFound()) {
+                            m.find();
+                            score++;
+                            if (score == markers.size()) {
+                                builder.setMessage("Congrats!").setTitle("You won!");
+                                builder.setPositiveButton("Play Again", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        score = 0;
+                                        for (HideAndSeekMarker m : markers)
+                                            m.reset();
+                                        dialog.dismiss();
+                                    }
+                                });
+                                builder.setNegativeButton("Quit", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        finish();
+                                    }
+                                });
+                            } else {
+                                builder.setMessage(score + "/" + markers.size() + " found. Keep going!").setTitle("You found " + marker.getTitle() + "!");
+                                builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                            }
+                        } else {
+                            builder.setMessage("Try to find another!").setTitle("Already found!");
+                            builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                        }
+
+                        AlertDialog dialog = builder.create();
+
+                        dialog.show();
+                    }
+
+                return true;
             }
         });
     }
@@ -116,6 +175,7 @@ public class PlayGameActivity extends FragmentActivity {
                 }
                 reader.endArray();
                 reader.close();
+                score = 0;
                 Toast toast = Toast.makeText(getApplicationContext(), "Game loaded successfully", 2000);
                 toast.setDuration(2000);
                 toast.show();
