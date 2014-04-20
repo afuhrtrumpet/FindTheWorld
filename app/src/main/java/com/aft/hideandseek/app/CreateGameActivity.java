@@ -1,33 +1,25 @@
 package com.aft.hideandseek.app;
 
 import android.content.Intent;
-import android.media.CameraProfile;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.Gravity;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
-import android.widget.PopupMenu;
-import android.widget.PopupWindow;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.ListView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity {
+public class CreateGameActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private LatLng selectedLoc;
@@ -50,12 +42,6 @@ public class MapsActivity extends FragmentActivity {
 
                 Log.d("", "Map long click occurred");
                 openContextMenu(findViewById(R.id.map));
-                /*PopupMenu popup = new PopupMenu(MapsActivity.this, findViewById(R.id.map));
-                MenuInflater inflater = popup.getMenuInflater();
-                inflater.inflate(R.menu.create_context_menu, popup.getMenu());
-                popup.show();*/
-
-
             }
         });
 
@@ -82,11 +68,11 @@ public class MapsActivity extends FragmentActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.add_marker:
-                Intent settingsIntent = new Intent(MapsActivity.this, MarkerSettingsActivity.class);
+                Intent settingsIntent = new Intent(CreateGameActivity.this, MarkerSettingsActivity.class);
                 startActivityForResult(settingsIntent, 1);
                 return true;
             case R.id.save:
-                Intent saveIntent = new Intent(MapsActivity.this, SaveGameActivity.class);
+                Intent saveIntent = new Intent(CreateGameActivity.this, SaveGameActivity.class);
                 saveIntent.putParcelableArrayListExtra("Markers", markers);
                 startActivity(saveIntent);
             default:

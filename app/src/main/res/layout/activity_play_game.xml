@@ -3,5 +3,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/map"
-    tools:context="com.aft.hideandseek.app.CreateGameActivity"
+    tools:context="com.aft.hideandseek.app.PlayGameActivity"
     android:name="com.google.android.gms.maps.SupportMapFragment"/>

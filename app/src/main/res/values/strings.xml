@@ -9,5 +9,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_main_menu">MainMenuActivity</string>
     <string name="title_activity_save_game">SaveGameActivity</string>
+    <string name="title_activity_play_game">Map</string>
+    <string name="title_activity_select_game">SelectGameActivity</string>
 
 </resources>

@@ -49,7 +49,9 @@ public class SaveGameActivity extends ActionBarActivity {
                         for (HideAndSeekMarker marker : markers) {
                             writer.beginObject();
                             writer.name("Name").value(marker.getName());
-                            writer.name("Latlng").value(marker.getPosition().toString());
+                            writer.name("Lat").value(marker.getPosition().latitude);
+                            writer.name("Long").value(marker.getPosition().longitude);
+                            writer.name("Zoom").value(marker.getZoomLevel());
                             writer.endObject();
                         }
                         writer.endArray();

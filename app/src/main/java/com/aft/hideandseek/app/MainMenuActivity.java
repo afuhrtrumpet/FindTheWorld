@@ -20,14 +20,17 @@ public class MainMenuActivity extends ActionBarActivity {
 
         String[] options = {"Create new game", "Play existing game"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, options);
-        ListView list = (ListView)findViewById(R.id.listView);
+        ListView list = (ListView)findViewById(R.id.mainList);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
-                    Intent createIntent = new Intent(MainMenuActivity.this, MapsActivity.class);
+                    Intent createIntent = new Intent(MainMenuActivity.this, CreateGameActivity.class);
                     startActivity(createIntent);
+                } else if (position == 1) {
+                    Intent selectIntent = new Intent(MainMenuActivity.this, SelectGameActivity.class);
+                    startActivity(selectIntent);
                 }
             }
         });
