@@ -3,8 +3,11 @@ package com.aft.hideandseek.app;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Environment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.JsonReader;
 import android.util.Log;
 import android.widget.Toast;
@@ -71,7 +74,7 @@ public class PlayGameActivity extends FragmentActivity {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
-                                        finish();
+                                        PlayGameActivity.this.finish();
                                     }
                                 });
                             } else {
@@ -107,6 +110,16 @@ public class PlayGameActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+    }
+
+    @Override
+    public void onDestroy() {
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = (fm.findFragmentById(R.id.map));
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.remove(fragment);
+        ft.commit();
+        super.onDestroy();
     }
 
     /**

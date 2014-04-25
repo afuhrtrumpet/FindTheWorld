@@ -1,13 +1,17 @@
 package com.aft.hideandseek.app;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.File;
 import java.io.Serializable;
 
 /**
@@ -19,12 +23,24 @@ public class HideAndSeekMarker implements Parcelable {
     private LatLng position;
     private float zoomLevel;
     private boolean found;
+    private String filename;
 
     public HideAndSeekMarker(GoogleMap map, String name, LatLng position, float _zoomLevel) {
         marker = map.addMarker(new MarkerOptions().title(name).position(position));
         zoomLevel = _zoomLevel;
         this.name = name;
         this.position = position;
+    }
+
+    public HideAndSeekMarker(GoogleMap map, String name, LatLng position, float _zoomLevel, String filename) {
+        File file = new File(filename);
+        Bitmap image = BitmapFactory.decodeFile(file.getAbsolutePath());
+
+        marker = map.addMarker(new MarkerOptions().title(name).position(position).icon(BitmapDescriptorFactory.fromBitmap(image)));
+        zoomLevel = _zoomLevel;
+        this.name = name;
+        this.position = position;
+        this.filename = filename;
     }
 
     public HideAndSeekMarker(Parcel in) {

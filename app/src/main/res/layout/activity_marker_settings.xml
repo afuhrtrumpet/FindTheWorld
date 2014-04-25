@@ -27,11 +27,62 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Set Text"
+        android:text="Create Marker"
         android:id="@+id/bSetMarker"
-        android:layout_below="@+id/markerText"
+        android:layout_below="@+id/bBrowse"
         android:layout_alignLeft="@+id/markerText"
         android:layout_alignStart="@+id/markerText"
-        android:layout_marginTop="73dp" />
+        android:layout_marginTop="52dp" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Use Custom Image"
+        android:id="@+id/customBox"
+        android:layout_below="@+id/markerText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="52dp"
+        android:checked="false" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Browse"
+        android:id="@+id/bBrowse"
+        android:layout_below="@+id/customBox"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="36dp"
+        android:enabled="false" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/filename"
+        android:layout_alignLeft="@+id/bSetMarker"
+        android:layout_alignStart="@+id/bSetMarker"
+        android:layout_alignBottom="@+id/bBrowse"
+        android:layout_alignRight="@+id/markerText"
+        android:layout_alignEnd="@+id/markerText"
+        android:editable="false"
+        android:enabled="false" />
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/bSetMarker" >
+
+        <GridView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/iconGrid" />
+    </ScrollView>
 
 </RelativeLayout>
