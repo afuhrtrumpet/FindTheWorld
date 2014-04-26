@@ -52,6 +52,7 @@ public class SaveGameActivity extends ActionBarActivity {
                             writer.name("Lat").value(marker.getPosition().latitude);
                             writer.name("Long").value(marker.getPosition().longitude);
                             writer.name("Zoom").value(marker.getZoomLevel());
+                            writer.name("File").value(marker.getFilename());
                             writer.endObject();
                         }
                         writer.endArray();

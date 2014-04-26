@@ -6,6 +6,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -23,7 +24,7 @@ public class HideAndSeekMarker implements Parcelable {
     private LatLng position;
     private float zoomLevel;
     private boolean found;
-    private String filename;
+    private String filename = "";
 
     public HideAndSeekMarker(GoogleMap map, String name, LatLng position, float _zoomLevel) {
         marker = map.addMarker(new MarkerOptions().title(name).position(position));
@@ -33,6 +34,7 @@ public class HideAndSeekMarker implements Parcelable {
     }
 
     public HideAndSeekMarker(GoogleMap map, String name, LatLng position, float _zoomLevel, String filename) {
+        this.filename = filename;
         File file = new File(filename);
         Bitmap image = BitmapFactory.decodeFile(file.getAbsolutePath());
 
@@ -47,6 +49,7 @@ public class HideAndSeekMarker implements Parcelable {
         name = in.readString();
         position = in.readParcelable(LatLng.class.getClassLoader());
         zoomLevel = in.readFloat();
+        filename = in.readString();
     }
 
     public Marker getMarker() { return marker; }
@@ -56,6 +59,8 @@ public class HideAndSeekMarker implements Parcelable {
     public LatLng getPosition() { return position; }
 
     public float getZoomLevel() { return zoomLevel; }
+
+    public String getFilename() { return filename; }
 
     public void adjustVisibilityFromZoom(float zoom) {
         marker.setVisible(zoomLevel <= zoom);
@@ -83,6 +88,7 @@ public class HideAndSeekMarker implements Parcelable {
         dest.writeString(name);
         dest.writeParcelable(position, 0);
         dest.writeFloat(zoomLevel);
+        dest.writeString(filename);
     }
 
     public static final Creator CREATOR = new Creator() {

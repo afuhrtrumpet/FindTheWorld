@@ -166,7 +166,7 @@ public class PlayGameActivity extends FragmentActivity {
                 reader.beginArray();
                 while (reader.hasNext()) {
                     reader.beginObject();
-                    String name = "";
+                    String name = "", filename = "";
                     float latitude = 0, longitude = 0, zoom = 0;
                     while (reader.hasNext()) {
                         String key = reader.nextName();
@@ -178,9 +178,15 @@ public class PlayGameActivity extends FragmentActivity {
                             longitude = (float)reader.nextDouble();
                         else if (key.equals("Zoom"))
                             zoom = (float)reader.nextDouble();
+                        else if (key.equals("File"))
+                            filename = reader.nextString();
                     }
                     reader.endObject();
-                    HideAndSeekMarker m = new HideAndSeekMarker(mMap, name, new LatLng(latitude, longitude), zoom);
+                    HideAndSeekMarker m;
+                    if (filename.length() > 0)
+                        m = new HideAndSeekMarker(mMap, name, new LatLng(latitude, longitude), zoom, filename);
+                    else
+                        m = new HideAndSeekMarker(mMap, name, new LatLng(latitude, longitude), zoom);
                     m.adjustVisibilityFromZoom(mMap.getCameraPosition().zoom);
                     Log.d("", "marker " + m.getName() + " added.");
                     markers.add(m);
