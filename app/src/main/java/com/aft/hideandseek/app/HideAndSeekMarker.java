@@ -6,6 +6,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -50,6 +51,16 @@ public class HideAndSeekMarker implements Parcelable {
         position = in.readParcelable(LatLng.class.getClassLoader());
         zoomLevel = in.readFloat();
         filename = in.readString();
+    }
+
+    public void displayOnMap(GoogleMap map) {
+        if (filename.length() > 0) {
+            File file = new File(filename);
+            Bitmap image = BitmapFactory.decodeFile(file.getAbsolutePath());
+            marker = map.addMarker(new MarkerOptions().title(name).position(position).icon(BitmapDescriptorFactory.fromBitmap(image)));
+        }
+        else
+            marker = map.addMarker(new MarkerOptions().title(name).position(position));
     }
 
     public Marker getMarker() { return marker; }

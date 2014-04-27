@@ -81,6 +81,25 @@ public class CreateGameActivity extends FragmentActivity {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        super.onSaveInstanceState(bundle);
+
+        bundle.putParcelableArrayList("Markers", markers);
+        bundle.putParcelable("Selected Location", selectedLoc);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle bundle) {
+        super.onRestoreInstanceState(bundle);
+
+        markers = bundle.getParcelableArrayList("Markers");
+        for (HideAndSeekMarker m : markers) {
+            m.displayOnMap(mMap);
+        }
+        selectedLoc = bundle.getParcelable("Selected Location");
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(resultCode + "", RESULT_OK + "");
