@@ -28,6 +28,8 @@ public class SaveGameActivity extends ActionBarActivity {
     private Button button;
     private EditText et;
 
+    private static final String APP_DIR = "hideandseek";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +42,7 @@ public class SaveGameActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                    File file = new File(Environment.getExternalStorageDirectory(), et.getText() + ".json");
+                    File file = new File(Environment.getExternalStorageDirectory(), APP_DIR + "/" + et.getText() + ".json");
                     try {
                         OutputStream out = new FileOutputStream(file);
                         JsonWriter writer = new JsonWriter(new OutputStreamWriter(out, "UTF-8"));

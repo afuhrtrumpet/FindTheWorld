@@ -21,16 +21,17 @@ import java.util.ArrayList;
 
 public class SelectGameActivity extends ActionBarActivity {
 
+    private static final String APP_DIR = "hideandseek";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_select_game);
 
         ArrayList<String> matchingFiles = new ArrayList<String>();
         ListView list = (ListView) findViewById(R.id.fileList);
 
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            File dir = Environment.getExternalStorageDirectory();
+            File dir = new File(Environment.getExternalStorageDirectory(), APP_DIR);
             File[] files = dir.listFiles();
             for (File file : files) {
                 if (!file.isDirectory() && file.getName().endsWith(".json")) {
@@ -56,6 +57,8 @@ public class SelectGameActivity extends ActionBarActivity {
             toast.show();
             finish();
         }
+
+        setContentView(R.layout.activity_select_game);
     }
 
 

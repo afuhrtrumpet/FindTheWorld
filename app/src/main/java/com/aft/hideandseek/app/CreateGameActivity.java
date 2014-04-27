@@ -83,12 +83,15 @@ public class CreateGameActivity extends FragmentActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        HideAndSeekMarker marker;
-        if (data.getStringExtra("File").length() > 0)
-            marker= new HideAndSeekMarker(mMap, data.getStringExtra("Name"), selectedLoc, mMap.getCameraPosition().zoom, data.getStringExtra("File"));
-        else
-            marker= new HideAndSeekMarker(mMap, data.getStringExtra("Name"), selectedLoc, mMap.getCameraPosition().zoom);
-        markers.add(marker);
+        Log.d(resultCode + "", RESULT_OK + "");
+        if (resultCode == RESULT_OK) {
+            HideAndSeekMarker marker;
+            if (data.getStringExtra("File").length() > 0)
+                marker= new HideAndSeekMarker(mMap, data.getStringExtra("Name"), selectedLoc, mMap.getCameraPosition().zoom, data.getStringExtra("File"));
+            else
+                marker= new HideAndSeekMarker(mMap, data.getStringExtra("Name"), selectedLoc, mMap.getCameraPosition().zoom);
+            markers.add(marker);
+        }
     }
 
     @Override

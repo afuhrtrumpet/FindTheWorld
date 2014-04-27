@@ -11,5 +11,6 @@
     <string name="title_activity_save_game">SaveGameActivity</string>
     <string name="title_activity_play_game">Map</string>
     <string name="title_activity_select_game">SelectGameActivity</string>
+    <string name="title_activity_image_menu">ImageMenuActivity</string>
 
 </resources>

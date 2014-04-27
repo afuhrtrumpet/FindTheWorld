@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.Image;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +26,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -38,8 +40,10 @@ import java.util.Comparator;
 
 public class MarkerSettingsActivity extends ActionBarActivity {
 
+    private static final String ORIGINAL_DIR = new File(Environment.getExternalStorageDirectory(), "hideandseek").getAbsolutePath();
     private final String[] IMAGE_EXTENSIONS = {"jpg", "png", "bmp", "gif", "jpeg"};
-    private int selectedIndex = 0;
+    private int selectedIndex = 1;
+    private String currentDir = ORIGINAL_DIR;
 
     private CheckBox cCustom;
     private GridView iconGrid;
@@ -53,13 +57,21 @@ public class MarkerSettingsActivity extends ActionBarActivity {
         cCustom = (CheckBox) findViewById(R.id.customBox);
         Button b = (Button) findViewById(R.id.bSetMarker);
         iconGrid = (GridView) findViewById(R.id.iconGrid);
-        getImageFiles();
+        getImageFiles(currentDir);
         final ImageAdapter adapter = new ImageAdapter(this);
         iconGrid.setAdapter(adapter);
         iconGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectedIndex = position;
+                if (files.get(position).equals("Back")) {
+                    currentDir = new File(currentDir, "../").getAbsolutePath();
+                    getImageFiles(currentDir);
+                } else if (new File(files.get(position)).isDirectory()) {
+                    currentDir = files.get(position);
+                    getImageFiles(currentDir);
+                } else {
+                    selectedIndex = position;
+                }
                 adapter.notifyDataSetChanged();
             }
         });
@@ -72,25 +84,40 @@ public class MarkerSettingsActivity extends ActionBarActivity {
                 intent.putExtra("Name", et.getText().toString());
                 String imageFile = "";
                 if (cCustom.isChecked()) {
+                    if (selectedIndex > files.size()) {
+                        Toast t = Toast.makeText(getApplicationContext(), "Please select an image!", 2000);
+                        t.show();
+                        return;
+                    }
                     imageFile = files.get(selectedIndex);
                 }
                 intent.putExtra("File", imageFile);
-                setResult(1, intent);
+                setResult(RESULT_OK, intent);
                 finish();
             }
         });
     }
 
-    public void getImageFiles() {
-        File dir = new File(Environment.getExternalStorageDirectory(), "pkmn");
+    public void getImageFiles(String directory) {
+        files = new ArrayList<String>();
+        File dir = new File(directory);
+        ArrayList<String> dirs = new ArrayList<String>();
         if (dir.isDirectory())
-            for (File f : dir.listFiles())
-                for (String ext : IMAGE_EXTENSIONS)
+            for (File f : dir.listFiles()) {
+                if (f.isDirectory()) {
+                    dirs.add(f.getAbsolutePath());
+                }
+                else for (String ext : IMAGE_EXTENSIONS)
                     if (f.getName().toLowerCase().endsWith(ext)) {
                         Log.d(f.toString(), "Adding file");
                         files.add(f.getAbsolutePath());
                     }
+            }
         Collections.sort(files, new StringComparator());
+        files.addAll(0, dirs);
+        if (!directory.equals(ORIGINAL_DIR))
+            files.add(0, "Back");
+        selectedIndex = 1 + dirs.size();
     }
 
     public class StringComparator implements Comparator<String> {
@@ -146,26 +173,55 @@ public class MarkerSettingsActivity extends ActionBarActivity {
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
-            Log.d("", "Getting position " + position);
-            ImageView c;
-            if (convertView == null) {
-                c = new ImageView(context);
+            Log.d("", "Getting file " + files.get(position));
+            Bitmap myBitmap;
+            if (files.get(position).equals("Back")) {
+                ImageView c;
+                if (convertView == null || !(convertView instanceof ImageView)) {
+                    c = new ImageView(context);
 
-                c.setLayoutParams(new GridView.LayoutParams(160, 160));
-                c.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                c.setPadding(8,8,8,8);
-            } else {
-                c = (ImageView) convertView;
-            }
-            if (position == selectedIndex) {
-                c.setBackgroundColor(Color.parseColor("#444444"));
-            } else {
-                c.setBackgroundColor(Color.TRANSPARENT);
-            }
-            Bitmap myBitmap = BitmapFactory.decodeFile(files.get(position));
-            c.setImageBitmap(myBitmap);
+                    c.setLayoutParams(new GridView.LayoutParams(160, 160));
+                    c.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    c.setPadding(8,8,8,8);
+                } else{
+                    c = (ImageView) convertView;
+                }
+                myBitmap = BitmapFactory.decodeResource(getResources(), android.R.drawable.ic_menu_revert);
+                c.setImageBitmap(myBitmap);
+                return c;
+            } else if (new File(files.get(position)).isDirectory()) {
+                TextView t;
+                if (convertView == null || !(convertView instanceof TextView)) {
+                    t = new TextView(context);
 
-            return c;
+                    t.setLayoutParams(new GridView.LayoutParams(160, 160));
+                    t.setPadding(8,8,8,8);
+                } else {
+                    t = (TextView) convertView;
+                }
+                t.setText(files.get(position).substring(files.get(position).lastIndexOf('/') + 1));
+                t.setBackgroundResource(android.R.drawable.ic_menu_add);
+                return t;
+            } else {
+                ImageView c;
+                if (convertView == null || !(convertView instanceof ImageView)) {
+                    c = new ImageView(context);
+
+                    c.setLayoutParams(new GridView.LayoutParams(160, 160));
+                    c.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    c.setPadding(8,8,8,8);
+                } else {
+                    c = (ImageView) convertView;
+                }
+                if (position == selectedIndex) {
+                    c.setBackgroundColor(Color.parseColor("#444444"));
+                } else {
+                    c.setBackgroundColor(Color.TRANSPARENT);
+                }
+                myBitmap = BitmapFactory.decodeFile(files.get(position));
+                c.setImageBitmap(myBitmap);
+                return c;
+            }
         }
     }
 

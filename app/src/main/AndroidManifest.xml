@@ -52,6 +52,10 @@
             android:name="com.aft.hideandseek.app.SelectGameActivity"
             android:label="@string/title_activity_select_game" >
         </activity>
+        <activity
+            android:name="com.aft.hideandseek.app.ImageMenuActivity"
+            android:label="@string/title_activity_image_menu" >
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

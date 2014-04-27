@@ -1,6 +1,7 @@
 package com.aft.hideandseek.app;
 
 import android.content.Intent;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,16 +10,27 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import java.io.File;
 
 
 public class MainMenuActivity extends ActionBarActivity {
+
+    private static final String APP_DIR = "hideandseek";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-        String[] options = {"Create new game", "Play existing game"};
+        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            Toast.makeText(getApplicationContext(), "External storage is not mounted!", 2000).show();
+            finish();
+        }
+        new File(Environment.getExternalStorageDirectory(), APP_DIR).mkdir();
+
+        String[] options = {"Create new game", "Play existing game", "Download images"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, options);
         ListView list = (ListView)findViewById(R.id.mainList);
         list.setAdapter(adapter);
@@ -31,6 +43,9 @@ public class MainMenuActivity extends ActionBarActivity {
                 } else if (position == 1) {
                     Intent selectIntent = new Intent(MainMenuActivity.this, SelectGameActivity.class);
                     startActivity(selectIntent);
+                } else if (position == 2) {
+                    Intent downloadIntent = new Intent(MainMenuActivity.this, ImageMenuActivity.class);
+                    startActivity(downloadIntent);
                 }
             }
         });

@@ -32,6 +32,8 @@ public class PlayGameActivity extends FragmentActivity {
     private List<HideAndSeekMarker> markers;
     private int score;
 
+    private static final String APP_DIR = "hideandseek";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -158,7 +160,7 @@ public class PlayGameActivity extends FragmentActivity {
      */
     private void setUpMap() {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            File file = new File(Environment.getExternalStorageDirectory(), getIntent().getStringExtra("File"));
+            File file = new File(Environment.getExternalStorageDirectory(), APP_DIR + "/" + getIntent().getStringExtra("File"));
             try {
                 markers = new ArrayList<HideAndSeekMarker>();
                 InputStream in = new FileInputStream(file);
