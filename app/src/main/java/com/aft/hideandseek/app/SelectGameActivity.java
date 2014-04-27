@@ -26,6 +26,7 @@ public class SelectGameActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_select_game);
 
         ArrayList<String> matchingFiles = new ArrayList<String>();
         ListView list = (ListView) findViewById(R.id.fileList);
@@ -58,7 +59,6 @@ public class SelectGameActivity extends ActionBarActivity {
             finish();
         }
 
-        setContentView(R.layout.activity_select_game);
     }
 
 

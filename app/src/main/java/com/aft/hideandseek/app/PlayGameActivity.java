@@ -114,16 +114,6 @@ public class PlayGameActivity extends FragmentActivity {
         setUpMapIfNeeded();
     }
 
-    @Override
-    public void onDestroy() {
-        FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = (fm.findFragmentById(R.id.map));
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.remove(fragment);
-        ft.commit();
-        super.onDestroy();
-    }
-
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
      * installed) and the map has not already been instantiated.. This will ensure that we only ever
