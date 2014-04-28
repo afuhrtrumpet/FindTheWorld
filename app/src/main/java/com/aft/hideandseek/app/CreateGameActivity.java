@@ -15,6 +15,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ public class CreateGameActivity extends FragmentActivity {
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private LatLng selectedLoc;
     private ArrayList<HideAndSeekMarker> markers;
+    private HideAndSeekMarker selectedMarker = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class CreateGameActivity extends FragmentActivity {
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
+                selectedMarker = null;
                 selectedLoc = latLng;
 
                 Log.d("", "Map long click occurred");
@@ -45,12 +48,16 @@ public class CreateGameActivity extends FragmentActivity {
             }
         });
 
-        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
-            public void onCameraChange(CameraPosition position) {
+            public boolean onMarkerClick(Marker marker) {
                 for (HideAndSeekMarker m : markers) {
-                    m.adjustVisibilityFromZoom(position.zoom);
+                    if (m.getMarker().equals(marker)) {
+                        selectedMarker = m;
+                    }
                 }
+                openContextMenu(findViewById(R.id.map));
+                return true;
             }
         });
     }
@@ -60,7 +67,10 @@ public class CreateGameActivity extends FragmentActivity {
                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.create_context_menu, menu);
+        if (selectedMarker != null)
+            inflater.inflate(R.menu.edit_context_menu, menu);
+        else
+            inflater.inflate(R.menu.create_context_menu, menu);
     }
 
     @Override
@@ -69,12 +79,25 @@ public class CreateGameActivity extends FragmentActivity {
         switch (item.getItemId()) {
             case R.id.add_marker:
                 Intent settingsIntent = new Intent(CreateGameActivity.this, MarkerSettingsActivity.class);
+                settingsIntent.putExtra("New", true);
+                settingsIntent.putExtra("Zoom", (int)mMap.getCameraPosition().zoom);
                 startActivityForResult(settingsIntent, 1);
                 return true;
             case R.id.save:
                 Intent saveIntent = new Intent(CreateGameActivity.this, SaveGameActivity.class);
                 saveIntent.putParcelableArrayListExtra("Markers", markers);
                 startActivity(saveIntent);
+                return true;
+            case R.id.edit_marker:
+                Intent editIntent = new Intent(CreateGameActivity.this, MarkerSettingsActivity.class);
+                editIntent.putExtra("New", false);
+                editIntent.putExtra("Marker", selectedMarker);
+                startActivityForResult(editIntent, 1);
+                return true;
+            case R.id.delete_marker:
+                selectedMarker.getMarker().remove();
+                markers.remove(selectedMarker);
+                return true;
             default:
                 return super.onContextItemSelected(item);
         }
@@ -104,12 +127,21 @@ public class CreateGameActivity extends FragmentActivity {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(resultCode + "", RESULT_OK + "");
         if (resultCode == RESULT_OK) {
-            HideAndSeekMarker marker;
-            if (data.getStringExtra("File").length() > 0)
-                marker= new HideAndSeekMarker(mMap, data.getStringExtra("Name"), selectedLoc, mMap.getCameraPosition().zoom, data.getStringExtra("File"));
-            else
-                marker= new HideAndSeekMarker(mMap, data.getStringExtra("Name"), selectedLoc, mMap.getCameraPosition().zoom);
-            markers.add(marker);
+            if (selectedMarker != null) {
+                Log.d("", "Changing marker info");
+                selectedMarker.setName(data.getStringExtra("Name"));
+                selectedMarker.setZoomLevel(data.getIntExtra("Zoom", (int)selectedMarker.getZoomLevel()));
+                selectedMarker.setImage(data.getStringExtra("File"));
+            }
+            else {
+                Log.d("", "Adding new marker");
+                HideAndSeekMarker marker;
+                if (data.getStringExtra("File").length() > 0)
+                    marker= new HideAndSeekMarker(mMap, data.getStringExtra("Name"), selectedLoc, data.getIntExtra("Zoom", 10), data.getStringExtra("File"));
+                else
+                    marker= new HideAndSeekMarker(mMap, data.getStringExtra("Name"), selectedLoc, data.getIntExtra("Zoom", 10));
+                markers.add(marker);
+            }
         }
     }
 

@@ -25,6 +25,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +48,8 @@ public class MarkerSettingsActivity extends ActionBarActivity {
 
     private CheckBox cCustom;
     private GridView iconGrid;
+    private EditText nameText;
+    private NumberPicker zoomPicker;
     private ArrayList<String> files = new ArrayList<String>();
 
     @Override
@@ -57,9 +60,35 @@ public class MarkerSettingsActivity extends ActionBarActivity {
         cCustom = (CheckBox) findViewById(R.id.customBox);
         Button b = (Button) findViewById(R.id.bSetMarker);
         iconGrid = (GridView) findViewById(R.id.iconGrid);
+        nameText = (EditText) findViewById(R.id.markerText);
+        zoomPicker = (NumberPicker) findViewById(R.id.zoomLevel);
+        zoomPicker.setMinValue(0);
+        zoomPicker.setMaxValue(20);
+
         getImageFiles(currentDir);
         final ImageAdapter adapter = new ImageAdapter(this);
         iconGrid.setAdapter(adapter);
+
+        if (getIntent().getBooleanExtra("New", true)) {
+            zoomPicker.setValue(getIntent().getIntExtra("Zoom", 10));
+        } else {
+            HideAndSeekMarker marker = getIntent().getParcelableExtra("Marker");
+            zoomPicker.setValue((int)marker.getZoomLevel());
+            nameText.setText(marker.getName());
+            cCustom.setChecked(marker.getFilename().equals(""));
+            if (cCustom.isChecked()) {
+                currentDir = marker.getFilename().substring(0, marker.getFilename().lastIndexOf('/'));
+            }
+            adapter.notifyDataSetChanged();
+            for (int i = 0; i < files.size(); i++) {
+                if (files.get(i).equals(marker.getFilename())) {
+                    selectedIndex = i;
+                    adapter.notifyDataSetChanged();
+                    break;
+                }
+            }
+        }
+
         iconGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -78,10 +107,10 @@ public class MarkerSettingsActivity extends ActionBarActivity {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText et = (EditText) findViewById(R.id.markerText);
 
                 Intent intent = new Intent();
-                intent.putExtra("Name", et.getText().toString());
+                intent.putExtra("Name", nameText.getText().toString());
+                intent.putExtra("Zoom", zoomPicker.getValue());
                 String imageFile = "";
                 if (cCustom.isChecked()) {
                     if (selectedIndex > files.size()) {

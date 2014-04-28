@@ -9,7 +9,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.aft.hideandseek.app.CreateGameActivity"
-            android:label="@string/title_activity_maps" >
+            android:label="Create Game">
         </activity>
 
         <meta-data
@@ -21,11 +21,11 @@
 
         <activity
             android:name="com.aft.hideandseek.app.MarkerSettingsActivity"
-            android:label="@string/title_activity_marker_settings" >
+            android:label="Configure New Marker">
         </activity>
         <activity
             android:name="com.aft.hideandseek.app.MainMenuActivity"
-            android:label="@string/title_activity_main_menu" >
+            android:label="GMaps Hide and Seek" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,7 +34,7 @@
         </activity>
         <activity
             android:name="com.aft.hideandseek.app.SaveGameActivity"
-            android:label="@string/title_activity_save_game" >
+            android:label="Save Game As">
         </activity>
 
         <meta-data
@@ -46,15 +46,15 @@
 
         <activity
             android:name="com.aft.hideandseek.app.PlayGameActivity"
-            android:label="@string/title_activity_play_game" >
+            android:label="Find the markers!" >
         </activity>
         <activity
             android:name="com.aft.hideandseek.app.SelectGameActivity"
-            android:label="@string/title_activity_select_game" >
+            android:label="Choose Game" >
         </activity>
         <activity
             android:name="com.aft.hideandseek.app.ImageMenuActivity"
-            android:label="@string/title_activity_image_menu" >
+            android:label="Select images to download">
         </activity>
     </application>
 

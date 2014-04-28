@@ -9,7 +9,7 @@
     tools:context="com.aft.hideandseek.app.MarkerSettingsActivity">
 
     <TextView
-        android:text="Marker Text"
+        android:text="Marker Name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView" />
@@ -29,39 +29,56 @@
         android:layout_height="wrap_content"
         android:text="Create Marker"
         android:id="@+id/bSetMarker"
-        android:layout_alignBottom="@+id/customBox"
-        android:layout_toRightOf="@+id/customBox" />
+        android:layout_above="@+id/scrollView"
+        android:layout_alignRight="@+id/customBox"
+        android:layout_alignEnd="@+id/customBox" />
 
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Use Custom Image"
         android:id="@+id/customBox"
-        android:layout_marginTop="37dp"
-        android:checked="false"
-        android:layout_below="@+id/markerText"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:checked="true"
+        android:layout_above="@+id/bSetMarker"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <ScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/scrollView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/bSetMarker" >
+        android:layout_below="@+id/zoomLevel"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
     </ScrollView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Minimum Zoom for Visibility"
+        android:id="@+id/textView2"
+        android:layout_below="@+id/markerText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <NumberPicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/zoomLevel"
+        android:layout_below="@+id/textView2"
+        android:layout_alignRight="@+id/textView"
+        android:layout_alignEnd="@+id/textView" />
 
     <GridView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/iconGrid"
         android:numColumns="5"
-        android:layout_alignTop="@+id/scrollView"
+        android:layout_below="@+id/bSetMarker"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 

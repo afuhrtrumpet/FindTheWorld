@@ -73,6 +73,25 @@ public class HideAndSeekMarker implements Parcelable {
 
     public String getFilename() { return filename; }
 
+    public void setName(String name) {
+        this.name = name;
+        marker.setTitle(name);
+    }
+
+    public void setPosition(LatLng position) {
+        this.position = position;
+        marker.setPosition(position);
+    }
+
+    public void setImage(String filename) {
+        this.filename = filename;
+        File file = new File(filename);
+        Bitmap image = BitmapFactory.decodeFile(file.getAbsolutePath());
+        marker.setIcon(BitmapDescriptorFactory.fromBitmap(image));
+    }
+
+    public void setZoomLevel(float zoom) { this.zoomLevel = zoom; }
+
     public void adjustVisibilityFromZoom(float zoom) {
         marker.setVisible(zoomLevel <= zoom);
     }
