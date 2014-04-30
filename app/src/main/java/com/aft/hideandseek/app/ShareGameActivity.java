@@ -52,7 +52,7 @@ public class ShareGameActivity extends ActionBarActivity {
                     shareIntent.setAction(Intent.ACTION_SEND);
                     File selectedFile = new File(DIR, matchingFiles.get(position) + ".zip");
                     Log.d(selectedFile.getAbsolutePath(), "File path");
-                    shareIntent.setType("*/*");
+                    shareIntent.setType("application/zip");
                     shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(selectedFile));
                     startActivity(Intent.createChooser(shareIntent, "Send to"));
                 }

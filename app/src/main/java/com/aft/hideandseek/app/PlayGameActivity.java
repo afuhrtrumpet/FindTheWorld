@@ -232,7 +232,7 @@ public class PlayGameActivity extends FragmentActivity {
                         String filename = reader.nextString();
                         if (filename.length() > 0) {
                             File imageFile = new File(Environment.getExternalStorageDirectory(), filename);
-                            imageFile.mkdirs();
+                            imageFile.getParentFile().mkdirs();
                             FileOutputStream imgOut = new FileOutputStream(imageFile);
                             ze = zin.getNextEntry();
                             Log.v("Decompress", "Unzipping " + ze.getName());

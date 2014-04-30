@@ -64,7 +64,7 @@ public class SaveGameActivity extends ActionBarActivity {
                             writer.name("Zoom").value(marker.getZoomLevel());
                             writer.name("File").value(marker.getFilename().replace(Environment.getExternalStorageDirectory().getAbsolutePath(), ""));
                             if (!marker.getFilename().equals("")) {
-                                filenames.add(marker.getFilename());
+                                filenames.add(new File(Environment.getExternalStorageDirectory(), marker.getFilename()).getAbsolutePath());
                             }
                             writer.endObject();
                         }
