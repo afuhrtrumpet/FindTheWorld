@@ -12,5 +12,6 @@
     <string name="title_activity_play_game">Map</string>
     <string name="title_activity_select_game">SelectGameActivity</string>
     <string name="title_activity_image_menu">ImageMenuActivity</string>
+    <string name="title_activity_share_game">ShareGameActivity</string>
 
 </resources>

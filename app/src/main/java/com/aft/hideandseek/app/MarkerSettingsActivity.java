@@ -120,7 +120,7 @@ public class MarkerSettingsActivity extends ActionBarActivity {
                     }
                     imageFile = files.get(selectedIndex);
                 }
-                intent.putExtra("File", imageFile);
+                intent.putExtra("File", imageFile.replace(Environment.getExternalStorageDirectory().getAbsolutePath(), ""));
                 setResult(RESULT_OK, intent);
                 finish();
             }

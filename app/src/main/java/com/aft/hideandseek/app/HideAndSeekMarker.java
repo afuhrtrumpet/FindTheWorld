@@ -2,6 +2,7 @@ package com.aft.hideandseek.app;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -36,7 +37,7 @@ public class HideAndSeekMarker implements Parcelable {
 
     public HideAndSeekMarker(GoogleMap map, String name, LatLng position, float _zoomLevel, String filename) {
         this.filename = filename;
-        File file = new File(filename);
+        File file = new File(Environment.getExternalStorageDirectory(), filename);
         Bitmap image = BitmapFactory.decodeFile(file.getAbsolutePath());
 
         marker = map.addMarker(new MarkerOptions().title(name).position(position).icon(BitmapDescriptorFactory.fromBitmap(image)));
@@ -55,7 +56,7 @@ public class HideAndSeekMarker implements Parcelable {
 
     public void displayOnMap(GoogleMap map) {
         if (filename.length() > 0) {
-            File file = new File(filename);
+            File file = new File(Environment.getExternalStorageDirectory(), filename);
             Bitmap image = BitmapFactory.decodeFile(file.getAbsolutePath());
             marker = map.addMarker(new MarkerOptions().title(name).position(position).icon(BitmapDescriptorFactory.fromBitmap(image)));
         }

@@ -9,7 +9,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.aft.hideandseek.app.CreateGameActivity"
-            android:label="Create Game">
+            android:label="Create Game" >
         </activity>
 
         <meta-data
@@ -21,7 +21,7 @@
 
         <activity
             android:name="com.aft.hideandseek.app.MarkerSettingsActivity"
-            android:label="Configure New Marker">
+            android:label="Configure New Marker" >
         </activity>
         <activity
             android:name="com.aft.hideandseek.app.MainMenuActivity"
@@ -34,7 +34,7 @@
         </activity>
         <activity
             android:name="com.aft.hideandseek.app.SaveGameActivity"
-            android:label="Save Game As">
+            android:label="Save Game As" >
         </activity>
 
         <meta-data
@@ -54,7 +54,11 @@
         </activity>
         <activity
             android:name="com.aft.hideandseek.app.ImageMenuActivity"
-            android:label="Select images to download">
+            android:label="Select images to download" >
+        </activity>
+        <activity
+            android:name="com.aft.hideandseek.app.ShareGameActivity"
+            android:label="Share Game" >
         </activity>
     </application>
 

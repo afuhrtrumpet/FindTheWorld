@@ -30,7 +30,7 @@ public class MainMenuActivity extends ActionBarActivity {
         }
         new File(Environment.getExternalStorageDirectory(), APP_DIR).mkdir();
 
-        String[] options = {"Create new game", "Play existing game", "Download images"};
+        String[] options = {"Create new game", "Play existing game", "Share game", "Download images"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, options);
         ListView list = (ListView)findViewById(R.id.mainList);
         list.setAdapter(adapter);
@@ -44,6 +44,9 @@ public class MainMenuActivity extends ActionBarActivity {
                     Intent selectIntent = new Intent(MainMenuActivity.this, SelectGameActivity.class);
                     startActivity(selectIntent);
                 } else if (position == 2) {
+                    Intent shareIntent = new Intent(MainMenuActivity.this, ShareGameActivity.class);
+                    startActivity(shareIntent);
+                } else if (position == 3) {
                     Intent downloadIntent = new Intent(MainMenuActivity.this, ImageMenuActivity.class);
                     startActivity(downloadIntent);
                 }

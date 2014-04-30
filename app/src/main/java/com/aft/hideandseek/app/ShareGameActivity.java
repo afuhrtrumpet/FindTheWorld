@@ -1,9 +1,12 @@
 package com.aft.hideandseek.app;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Environment;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,27 +16,25 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
-public class SelectGameActivity extends ActionBarActivity {
+public class ShareGameActivity extends ActionBarActivity {
 
     private static final String APP_DIR = "hideandseek";
+    private static final File DIR = new File(Environment.getExternalStorageDirectory(), APP_DIR);
+    ArrayList<String> matchingFiles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_select_game);
+        setContentView(R.layout.activity_share_game);
 
-        ArrayList<String> matchingFiles = new ArrayList<String>();
-        ListView list = (ListView) findViewById(R.id.fileList);
+        matchingFiles = new ArrayList<String>();
+        ListView list = (ListView) findViewById(R.id.shareList);
 
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            File dir = new File(Environment.getExternalStorageDirectory(), APP_DIR);
-            File[] files = dir.listFiles();
+            File[] files = DIR.listFiles();
             for (File file : files) {
                 if (!file.isDirectory() && file.getName().endsWith(".zip")) {
                     matchingFiles.add(file.getName().replace(".zip", ""));
@@ -47,9 +48,13 @@ public class SelectGameActivity extends ActionBarActivity {
             list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent playIntent = new Intent(SelectGameActivity.this, PlayGameActivity.class);
-                    playIntent.putExtra("File", filesArray[position] + ".zip");
-                    startActivity(playIntent);
+                    Intent shareIntent = new Intent();
+                    shareIntent.setAction(Intent.ACTION_SEND);
+                    File selectedFile = new File(DIR, matchingFiles.get(position) + ".zip");
+                    Log.d(selectedFile.getAbsolutePath(), "File path");
+                    shareIntent.setType("*/*");
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(selectedFile));
+                    startActivity(Intent.createChooser(shareIntent, "Send to"));
                 }
             });
         } else {
@@ -58,7 +63,6 @@ public class SelectGameActivity extends ActionBarActivity {
             toast.show();
             finish();
         }
-
     }
 
 
@@ -66,7 +70,7 @@ public class SelectGameActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.select_game, menu);
+        getMenuInflater().inflate(R.menu.share_game, menu);
         return true;
     }
 

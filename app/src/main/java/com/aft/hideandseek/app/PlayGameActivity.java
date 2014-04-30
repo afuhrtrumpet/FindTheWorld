@@ -20,11 +20,14 @@ import com.google.android.gms.maps.model.Marker;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class PlayGameActivity extends FragmentActivity {
 
@@ -153,7 +156,10 @@ public class PlayGameActivity extends FragmentActivity {
             File file = new File(Environment.getExternalStorageDirectory(), APP_DIR + "/" + getIntent().getStringExtra("File"));
             try {
                 markers = new ArrayList<HideAndSeekMarker>();
-                InputStream in = new FileInputStream(file);
+                unzipFiles(file.getAbsolutePath());
+                String jsonPath = file.getAbsolutePath().replace(".zip", ".json");
+                File jsonFile = new File(jsonPath);
+                InputStream in = new FileInputStream(jsonFile);
                 JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
                 reader.beginArray();
                 while (reader.hasNext()) {
@@ -186,6 +192,7 @@ public class PlayGameActivity extends FragmentActivity {
                 }
                 reader.endArray();
                 reader.close();
+                in.close();
                 score = 0;
                 Toast toast = Toast.makeText(getApplicationContext(), "Game loaded successfully", 2000);
                 toast.setDuration(2000);
@@ -198,6 +205,60 @@ public class PlayGameActivity extends FragmentActivity {
             toast.setDuration(2000);
             toast.show();
             finish();
+        }
+    }
+
+    public void unzipFiles(String zipFilename) {
+        try  {
+            File appDirectory = new File(Environment.getExternalStorageDirectory(), APP_DIR);
+            FileInputStream fin = new FileInputStream(zipFilename);
+            ZipInputStream zin = new ZipInputStream(fin);
+            ZipEntry ze = zin.getNextEntry();
+            Log.v("Decompress", "Unzipping " + ze.getName());
+            FileOutputStream fout = new FileOutputStream(new File(appDirectory, ze.getName()).getAbsolutePath());
+            for (int c = zin.read(); c != -1; c = zin.read()) {
+                fout.write(c);
+            }
+            fout.close();
+            //Read JSON file
+            FileInputStream jsonIn = new FileInputStream(new File(appDirectory, ze.getName()).getAbsolutePath());
+            JsonReader reader = new JsonReader(new InputStreamReader(jsonIn, "UTF-8"));
+            reader.beginArray();
+            while (reader.hasNext()) {
+                reader.beginObject();
+                while (reader.hasNext()) {
+                    String key = reader.nextName();
+                    if (key.equals("File")) {
+                        String filename = reader.nextString();
+                        if (filename.length() > 0) {
+                            File imageFile = new File(Environment.getExternalStorageDirectory(), filename);
+                            imageFile.mkdirs();
+                            FileOutputStream imgOut = new FileOutputStream(imageFile);
+                            ze = zin.getNextEntry();
+                            Log.v("Decompress", "Unzipping " + ze.getName());
+                            for (int c = zin.read(); c != -1; c = zin.read()) {
+                                imgOut.write(c);
+                            }
+                            imgOut.close();
+                        }
+                    } else if (key.equals("Name"))
+                        reader.nextString();
+                    else if (key.equals("Lat"))
+                        reader.nextDouble();
+                    else if (key.equals("Long"))
+                        reader.nextDouble();
+                    else if (key.equals("Zoom"))
+                        reader.nextDouble();
+                }
+                reader.endObject();
+            }
+            reader.endArray();
+            reader.close();
+
+            zin.closeEntry();
+            zin.close();
+        } catch(Exception e) {
+            Log.e("Decompress", "unzip", e);
         }
     }
 }

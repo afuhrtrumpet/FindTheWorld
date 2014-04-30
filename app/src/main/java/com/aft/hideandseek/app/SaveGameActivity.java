@@ -16,12 +16,17 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class SaveGameActivity extends ActionBarActivity {
 
@@ -29,6 +34,7 @@ public class SaveGameActivity extends ActionBarActivity {
     private EditText et;
 
     private static final String APP_DIR = "hideandseek";
+    private static final int BUFFER = 2048;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,17 +54,24 @@ public class SaveGameActivity extends ActionBarActivity {
                         JsonWriter writer = new JsonWriter(new OutputStreamWriter(out, "UTF-8"));
                         writer.beginArray();
                         ArrayList<HideAndSeekMarker> markers = SaveGameActivity.this.getIntent().getParcelableArrayListExtra("Markers");
+                        ArrayList<String> filenames = new ArrayList<String>();
+                        filenames.add(file.getAbsolutePath());
                         for (HideAndSeekMarker marker : markers) {
                             writer.beginObject();
                             writer.name("Name").value(marker.getName());
                             writer.name("Lat").value(marker.getPosition().latitude);
                             writer.name("Long").value(marker.getPosition().longitude);
                             writer.name("Zoom").value(marker.getZoomLevel());
-                            writer.name("File").value(marker.getFilename());
+                            writer.name("File").value(marker.getFilename().replace(Environment.getExternalStorageDirectory().getAbsolutePath(), ""));
+                            if (!marker.getFilename().equals("")) {
+                                filenames.add(marker.getFilename());
+                            }
                             writer.endObject();
                         }
                         writer.endArray();
                         writer.close();
+                        out.close();
+                        zip(filenames.toArray(new String[filenames.size()]), new File(Environment.getExternalStorageDirectory(), APP_DIR + "/" + et.getText() + ".zip").getAbsolutePath());
                         Intent startIntent = new Intent(SaveGameActivity.this, MainMenuActivity.class);
                         Toast toast = Toast.makeText(getApplicationContext(), "File written successfully.", 2000);
                         toast.setDuration(2000);
@@ -98,4 +111,35 @@ public class SaveGameActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void zip(String[] _files, String zipFileName)
+    {
+        //_files is the path of the files which you want to make it zip
+
+        try {
+            BufferedInputStream origin = null;
+            FileOutputStream dest = new FileOutputStream(zipFileName);
+            ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(
+                    dest));
+            byte data[] = new byte[BUFFER];
+
+            for (int i = 0; i < _files.length; i++) {
+                Log.v("Compress", "Adding: " + _files[i]);
+                FileInputStream fi = new FileInputStream(_files[i]);
+                origin = new BufferedInputStream(fi, BUFFER);
+
+                ZipEntry entry = new ZipEntry(_files[i].substring(_files[i].lastIndexOf("/") + 1));
+                out.putNextEntry(entry);
+                int count;
+
+                while ((count = origin.read(data, 0, BUFFER)) != -1) {
+                    out.write(data, 0, count);
+                }
+                origin.close();
+            }
+
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
