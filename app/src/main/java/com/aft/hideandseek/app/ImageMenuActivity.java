@@ -40,7 +40,7 @@ public class ImageMenuActivity extends ActionBarActivity {
             File dir = new File(storageDir, "pokemon");
             dir.mkdir();
             for (int i = 1; i <= 718; i++) {
-                //progress.setMessage(i + "/718");
+                progress.setMessage(i + "/718");
                 InputStream input = null;
                 OutputStream output = null;
                 HttpURLConnection connection = null;
@@ -125,7 +125,7 @@ public class ImageMenuActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_menu);
-        String[] options = {"pokemon"};
+        String[] options = {"Pokemon"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, options);
         ListView list = (ListView)findViewById(R.id.downloaderList);
         list.setAdapter(adapter);

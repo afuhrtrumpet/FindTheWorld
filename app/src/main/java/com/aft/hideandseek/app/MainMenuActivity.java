@@ -1,6 +1,7 @@
 package com.aft.hideandseek.app;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -30,7 +31,7 @@ public class MainMenuActivity extends ActionBarActivity {
         }
         new File(Environment.getExternalStorageDirectory(), APP_DIR).mkdir();
 
-        String[] options = {"Create new game", "Play existing game", "Share game", "Download images"};
+        String[] options = {"Create new game", "Play existing game", "Share game", "Download images", "About app"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, options);
         ListView list = (ListView)findViewById(R.id.mainList);
         list.setAdapter(adapter);
@@ -49,6 +50,10 @@ public class MainMenuActivity extends ActionBarActivity {
                 } else if (position == 3) {
                     Intent downloadIntent = new Intent(MainMenuActivity.this, ImageMenuActivity.class);
                     startActivity(downloadIntent);
+                } else if (position == 4) {
+                    Intent aboutIntent = new Intent(Intent.ACTION_VIEW);
+                    aboutIntent.setData(Uri.parse("http://afuhrtrumpet.github.io/findtheworld.html"));
+                    startActivity(aboutIntent);
                 }
             }
         });

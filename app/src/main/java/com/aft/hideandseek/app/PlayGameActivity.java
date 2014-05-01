@@ -65,7 +65,7 @@ public class PlayGameActivity extends FragmentActivity {
                             m.find();
                             score++;
                             if (score == markers.size()) {
-                                builder.setMessage("Congrats!").setTitle("You won!");
+                                builder.setMessage("Congrats! You won!").setTitle("You found " + marker.getTitle() + "!");
                                 builder.setPositiveButton("Play Again", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
