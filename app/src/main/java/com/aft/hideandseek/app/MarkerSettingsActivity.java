@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.media.Image;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -41,6 +42,8 @@ import java.util.Comparator;
 
 public class MarkerSettingsActivity extends ActionBarActivity {
 
+    private static final int IMAGE_WIDTH = 160;
+    private static final int PADDING = 8;
     private static final String ORIGINAL_DIR = new File(Environment.getExternalStorageDirectory(), "hideandseek").getAbsolutePath();
     private final String[] IMAGE_EXTENSIONS = {"jpg", "png", "bmp", "gif", "jpeg"};
     private int selectedIndex = 1;
@@ -60,6 +63,7 @@ public class MarkerSettingsActivity extends ActionBarActivity {
         cCustom = (CheckBox) findViewById(R.id.customBox);
         Button b = (Button) findViewById(R.id.bSetMarker);
         iconGrid = (GridView) findViewById(R.id.iconGrid);
+        iconGrid.setNumColumns((int)(getWindowManager().getDefaultDisplay().getWidth() / (PADDING + IMAGE_WIDTH)));
         nameText = (EditText) findViewById(R.id.markerText);
         zoomPicker = (NumberPicker) findViewById(R.id.zoomLevel);
         zoomPicker.setMinValue(0);
@@ -156,6 +160,22 @@ public class MarkerSettingsActivity extends ActionBarActivity {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        super.onSaveInstanceState(bundle);
+
+        bundle.putString("Dir", currentDir);
+        bundle.putInt("Selected Index", selectedIndex);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle bundle) {
+        super.onRestoreInstanceState(bundle);
+
+        currentDir = bundle.getString("Dir");
+        selectedIndex = bundle.getInt("Selected Index");
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             String filePath = data.getData().getPath();
@@ -209,9 +229,9 @@ public class MarkerSettingsActivity extends ActionBarActivity {
                 if (convertView == null || !(convertView instanceof ImageView)) {
                     c = new ImageView(context);
 
-                    c.setLayoutParams(new GridView.LayoutParams(160, 160));
+                    c.setLayoutParams(new GridView.LayoutParams(IMAGE_WIDTH, IMAGE_WIDTH));
                     c.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    c.setPadding(8,8,8,8);
+                    c.setPadding(PADDING, PADDING, PADDING, PADDING);
                 } else{
                     c = (ImageView) convertView;
                 }

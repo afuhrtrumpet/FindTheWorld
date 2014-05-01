@@ -62,6 +62,9 @@ public class HideAndSeekMarker implements Parcelable {
         }
         else
             marker = map.addMarker(new MarkerOptions().title(name).position(position));
+        if (found) {
+            marker.setAlpha(0.5F);
+        }
     }
 
     public Marker getMarker() { return marker; }

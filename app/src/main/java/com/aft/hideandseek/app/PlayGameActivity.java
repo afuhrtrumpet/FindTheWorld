@@ -32,7 +32,7 @@ import java.util.zip.ZipInputStream;
 public class PlayGameActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private List<HideAndSeekMarker> markers;
+    private ArrayList<HideAndSeekMarker> markers;
     private int score;
 
     private static final String APP_DIR = "hideandseek";
@@ -117,6 +117,25 @@ public class PlayGameActivity extends FragmentActivity {
         setUpMapIfNeeded();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        super.onSaveInstanceState(bundle);
+
+        bundle.putParcelableArrayList("Markers", markers);
+        bundle.putInt("Score", score);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle bundle) {
+        super.onRestoreInstanceState(bundle);
+
+        markers = bundle.getParcelableArrayList("Markers");
+        for (HideAndSeekMarker m : markers) {
+            m.displayOnMap(mMap);
+        }
+        score = bundle.getInt("Score");
+    }
+
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
      * installed) and the map has not already been instantiated.. This will ensure that we only ever
@@ -144,6 +163,8 @@ public class PlayGameActivity extends FragmentActivity {
             }
         }
     }
+
+
 
     /**
      * This is where we can add markers or lines, add listeners or move the camera. In this case, we
